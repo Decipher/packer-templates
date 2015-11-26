@@ -1,0 +1,7 @@
+---
+- name: Ensure MySQL databases are present.
+  mysql_db:
+    name: "{{ item.name }}"
+    target: "{{ item.source }}"
+    state: import
+  with_items: mysql_databases

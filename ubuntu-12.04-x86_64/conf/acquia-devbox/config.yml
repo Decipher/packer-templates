@@ -1,0 +1,39 @@
+---
+# Vagrant configuration.
+vagrant_ip: 192.168.24.4
+vagrant_memory: 1024
+vagrant_cpus: 2
+vagrant_synced_folder: "nfs"
+
+# Acquia config.
+sitename: devbox
+domain: local.acquia-devbox.com
+
+databases:
+  - name: "{{ sitename }}"
+#    import: file,
+#    source: db/db/sql
+#  - name: db2
+#    import: file,
+#    source: db/db/sql
+
+# Environment config.
+# https://docs.acquia.com/cloud/configure/environments/php
+
+# PHP Version
+php_version: "5.6"
+
+# PHP max execution time (seconds)
+php_max_execution_time: "128"
+
+# PHP memory
+php_memory_limit: "128M"
+
+# PHP opcode cache size
+php_opcache_memory_consumption: "96M"
+
+# Maximum input variables
+php_max_input_vars: "1000"
+
+# Maximum size of POST request
+php_post_max_size: "256M"

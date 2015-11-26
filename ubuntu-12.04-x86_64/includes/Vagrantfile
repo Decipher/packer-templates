@@ -1,0 +1,47 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.require_version '>= 1.7.0'
+
+Vagrant.configure("2") do |config|
+
+  if !File.exist?(vagrant_config)
+    raise 'Vagrant configuration file config.yml not found!'
+  end
+
+  require 'yaml'
+  vconfig = YAML::load_file($vagrant_config)
+
+  config.vm.hostname = vconfig['vagrant_hostname']
+  config.vm.network :private_network, ip: vconfig['vagrant_ip']
+  config.ssh.insert_key = false
+  config.ssh.forward_agent = true
+  config.vm.synced_folder = ".", "/var/www/html/#{$vconfig['sitename']}.local/docroot", nfs, drupal
+
+  # Ansible
+  if File.exist?($vagrant_config)
+
+    # Upload acquia.config.yml
+    config.vm.provision "ansible_config", type: "file" do |s|
+     s.source = $vagrant_config
+     s.destination = "/ansible/acquia.config.yml"
+    end
+
+    # Provision box
+    config.vm.provision "ansible", type: "shell" do |s|
+      s.privileged = true
+      s.inline = 'ANSIBLE_FORCE_COLOR=1 PYTHONUNBUFFERED=1 ansible-playbook /ansible/playbook.yml --sudo -c local -i "127.0.0.1vagrant,"'
+    end
+
+  end
+
+  # VirtualBox.
+  config.vm.provider :virtualbox do |v|
+    v.name = vconfig['vagrant_hostname']
+    v.memory = vconfig['vagrant_memory']
+    v.cpus = vconfig['vagrant_cpus']
+    v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    v.customize ["modifyvm", :id, "--ioapic", "on"]
+  end
+
+end

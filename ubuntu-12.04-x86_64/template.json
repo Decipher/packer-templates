@@ -1,14 +1,14 @@
 {
   "variables": {
-    "version": "0.1.{{env `ATLAS_BUILD_CONFIGURATION_VERSION`}}",
-    "atlas_username": "{{env `ATLAS_USERNAME`}}",
-    "atlas_name": "{{env `ATLAS_NAME`}}",
+    "version": "0.1.{{env `ATLAS_BUILD_NUMBER`}}",
+    "atlas_username": "8thom",
+    "atlas_name": "acquia-devbox",
     "ssh_name": "vagrant",
     "ssh_pass": "vagrant",
     "ansible_dir": "ansible",
-    "ansible_config": "{{env `ANSIBLE_CONFIG`}}",
     "ansible_playbook": "ansible/playbook.yml",
-    "ansible_staging_dir": "/ansible"
+    "ansible_staging_dir": "/ansible",
+    "vagrantfile_template": "includes/Vagrantfile"
   },
   "builders": [
     {
@@ -54,11 +54,6 @@
       "destination": "{{user `ansible_staging_dir`}}"
     },
     {
-      "type": "file",
-      "source": "{{user `ansible_config`}}",
-      "destination": "{{user `ansible_staging_dir`}}/box.config.yml"
-    },
-    {
       "type": "shell",
       "execute_command": "sudo bash '{{.Path}}'",
       "inline": [
@@ -66,10 +61,11 @@
       ]
     },
     {
-      "type": "ansible-local",
-      "playbook_file": "{{user `ansible_playbook`}}",
-      "staging_directory": "{{user `ansible_staging_dir`}}",
-      "extra_arguments": "--sudo"
+      "type": "shell",
+      "execute_command": "sudo bash '{{.Path}}'",
+      "inline": [
+        "ANSIBLE_FORCE_COLOR=1 PYTHONUNBUFFERED=1 ansible-playbook /ansible/playbook.yml --sudo -c local -i '127.0.0.1vagrant,'"
+      ]
     },
     {
       "type": "shell",
@@ -85,7 +81,8 @@
       {
         "type": "vagrant",
         "compression_level": 9,
-        "output": "{{user `atlas_username`}}-{{user `atlas_name`}}-{{.Provider}}.box"
+        "output": "{{user `atlas_username`}}-{{user `atlas_name`}}-{{.Provider}}.box",
+        "vagrantfile_template": "{{user `vagrantfile_template`}}"
       },
       {
         "type": "atlas",

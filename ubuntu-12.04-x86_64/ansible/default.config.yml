@@ -18,9 +18,6 @@ install_site: false
 build_makefile: false
 drush_makefile_path: /vagrant/drupal.make.yml
 
-# Symlinks
-symlinks: no
-
 # Update anisble roles before provisioning.
 update_ansible_roles: no
 
@@ -32,8 +29,8 @@ installed_extras:
   - pimpmylog
   - varnish
   - xdebug
-  - xhprof
   - selenium
+  #  - xhprof
   # - drupal-console
   # - solr
 
@@ -82,7 +79,7 @@ drush_version: "7.0.0-rc2"
 # MySQL Config
 mysql_root_password: root
 mysql_databases:
-  - name: dmbox
+  - name: devbox
     encoding: utf8
     collation: utf8_general_ci
 
