@@ -1,0 +1,3 @@
+[submodule "ubuntu-12.04-x86_64/beetbox"]
+	path = ubuntu-12.04-x86_64/beetbox
+	url = https://github.com/drupalmel/beetbox.git

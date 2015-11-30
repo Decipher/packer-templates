@@ -5,9 +5,8 @@
     "atlas_name": "{{env `ATLAS_BUILD_NAME`}}",
     "ssh_name": "vagrant",
     "ssh_pass": "vagrant",
-    "ansible_dir": "ansible",
-    "ansible_config": "{{env `ANSIBLE_CONFIG`}}",
-    "ansible_playbook": "ansible/playbook.yml",
+    "hostname": "beetbox.local",
+    "ansible_dir": "beetbox/ansible",
     "ansible_staging_dir": "/ansible"
   },
   "builders": [
@@ -17,7 +16,7 @@
         "<esc><esc><enter><wait>",
         "/install/vmlinuz noapic preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
         "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
-        "hostname=dmbox.local ",
+        "hostname={{ user `hostname` }} ",
         "fb=false debconf/frontend=noninteractive ",
         "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA keyboard-configuration/variant=USA console-setup/ask_detect=false ",
         "initrd=/install/initrd.gz -- <enter>"
@@ -54,22 +53,11 @@
       "destination": "{{user `ansible_staging_dir`}}"
     },
     {
-      "type": "file",
-      "source": "{{user `ansible_config`}}",
-      "destination": "{{user `ansible_staging_dir`}}/box.config.yml"
-    },
-    {
       "type": "shell",
       "execute_command": "sudo bash '{{.Path}}'",
       "inline": [
-        "ansible-galaxy install --ignore-errors -r {{user `ansible_staging_dir`}}/requirements.yml"
+        "chmod +x /ansible/build.sh && /ansible/build.sh"
       ]
-    },
-    {
-      "type": "ansible-local",
-      "playbook_file": "{{user `ansible_playbook`}}",
-      "staging_directory": "{{user `ansible_staging_dir`}}",
-      "extra_arguments": "--sudo"
     },
     {
       "type": "shell",
