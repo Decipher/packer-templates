@@ -4,17 +4,12 @@ python: "2.7"
 sudo: false
 
 env:
-  - PLAYBOOK=playbook.yml ANSIBLE_ROOT=ubuntu-12.04-x86_64/ansible ANSIBLE_CONF=ubuntu-12.04-x86_64/example/vagrant.ansible.yml.default
+  - PLAYBOOK=playbook-provision.yml ROLES_PLAYBOOK=playbook-roles.yml ANSIBLE_ROOT=ubuntu-12.04-x86_64/beetbox/ansible
 
 addons:
   apt:
-    sources:
-    - ppa:ondrej/php5
     packages:
     - curl
-
-before_install:
-  - cp $ANSIBLE_CONF $ANSIBLE_ROOT/box.config.yml
 
 install:
   # Install Ansible.
@@ -23,9 +18,18 @@ install:
   # Add ansible.cfg to pick up roles path.
   - "{ echo '[defaults]'; echo 'roles_path = ../'; } >> ansible.cfg"
 
-  # Install required dependencies.
-  - ansible-galaxy install -r $ANSIBLE_ROOT/requirements.yml
+  # Create config files.
+  - touch $ANSIBLE_ROOT/beetbox.config.yml
+  - touch $ANSIBLE_ROOT/project.config.yml
+  - touch $ANSIBLE_ROOT/vagrant.config.yml
+
+  # Install galaxy roles.
+  - ansible-playbook $ANSIBLE_ROOT/$ROLES_PLAYBOOK -i "localhost,"
 
 script:
-  # Check the role/playbook's syntax.
-  - "ansible-playbook $ANSIBLE_ROOT/$PLAYBOOK -c local -i 'localhost,' --syntax-check"
+
+  # Check playbook-roles.yml syntax.
+  - "ansible-playbook $ANSIBLE_ROOT/$ROLES_PLAYBOOK --syntax-check"
+
+  # Check playbook-provision.yml syntax.
+  - "ansible-playbook $ANSIBLE_ROOT/$PLAYBOOK --syntax-check"
