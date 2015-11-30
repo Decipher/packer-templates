@@ -56,7 +56,8 @@
       "type": "shell",
       "execute_command": "sudo bash '{{.Path}}'",
       "inline": [
-        "chmod +x /ansible/build.sh && /ansible/build.sh"
+        "chmod +x /ansible/build.sh && /ansible/build.sh",
+        "chown -R {{user `ssh_name`}}:{{user `ssh_pass`}} /ansible"
       ]
     },
     {
