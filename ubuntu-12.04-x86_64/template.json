@@ -7,7 +7,8 @@
     "ssh_pass": "vagrant",
     "hostname": "beetbox.local",
     "ansible_dir": "beetbox/ansible",
-    "ansible_staging_dir": "/ansible"
+    "ansible_staging_dir": "/ansible",
+    "ansible_conf": "project.config.yml"
   },
   "builders": [
     {
@@ -51,6 +52,11 @@
       "type": "file",
       "source": "{{user `ansible_dir`}}/",
       "destination": "{{user `ansible_staging_dir`}}"
+    },
+    {
+      "type": "file",
+      "source": "{{user `ansible_conf`}}/",
+      "destination": "{{user `ansible_staging_dir`}}/project.config.yml"
     },
     {
       "type": "shell",
