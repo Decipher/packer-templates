@@ -55,7 +55,7 @@
     },
     {
       "type": "file",
-      "source": "{{user `ansible_conf`}}/",
+      "source": "{{user `ansible_conf`}}",
       "destination": "{{user `ansible_staging_dir`}}/project.config.yml"
     },
     {
