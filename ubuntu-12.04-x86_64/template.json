@@ -6,9 +6,7 @@
     "ssh_name": "vagrant",
     "ssh_pass": "vagrant",
     "hostname": "beetbox.local",
-    "ansible_dir": "beetbox/ansible",
-    "ansible_staging_dir": "/ansible",
-    "ansible_conf": "project.config.yml"
+    "ansible_staging_dir": "/beetbox/ansible"
   },
   "builders": [
     {
@@ -44,26 +42,16 @@
         "scripts/base.sh",
         "scripts/vagrant.sh",
         "scripts/virtualbox.sh",
-        "scripts/ansible.sh"
+        "scripts/ansible.sh",
+        "scripts/beetbox.sh"
       ],
       "execute_command": "echo 'vagrant' | sudo -S '{{.Path}}'"
-    },
-    {
-      "type": "file",
-      "source": "{{user `ansible_dir`}}/",
-      "destination": "{{user `ansible_staging_dir`}}"
-    },
-    {
-      "type": "file",
-      "source": "{{user `ansible_conf`}}",
-      "destination": "{{user `ansible_staging_dir`}}/project.config.yml"
     },
     {
       "type": "shell",
       "execute_command": "sudo bash '{{.Path}}'",
       "inline": [
-        "chmod +x /ansible/build.sh && /ansible/build.sh",
-        "chown -R {{user `ssh_name`}}:{{user `ssh_pass`}} /ansible"
+        "chown -R {{user `ssh_name`}}:{{user `ssh_pass`}} {{user `ansible_staging_dir`}}"
       ]
     },
     {
