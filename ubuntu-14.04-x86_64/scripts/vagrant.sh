@@ -33,9 +33,3 @@ chown -R vagrant /home/vagrant/.ssh
 # fix vagrant no tty errors
 # http://foo-o-rama.com/vagrant--stdin-is-not-a-tty--fix.html
 sed -i '/tty/!s/mesg n/tty -s \&\& mesg n/' /root/.profile
-
-# Set default path
-echo "
-if [ -e /drupal ] ; then
-  cd /drupal
-fi" > /home/vagrant/.bashrc
